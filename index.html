@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft Fabric Pricing & Cloud Cost Estimator | UIG Edge Node</title>
+    <style>
+        /* STRICT ENCAPSULATION: Azure Node */
+        .uig-az-wrapper { font-family: system-ui, -apple-system, sans-serif; max-width: 850px; margin: 0 auto; padding: 25px; line-height: 1.7; color: #1e293b; }
+        .uig-az-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 30px; margin: 30px 0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .uig-az-input-group { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .uig-az-label { font-weight: 600; color: #0f172a; font-size: 0.95rem; }
+        .uig-az-input, .uig-az-select { width: 100%; padding: 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; box-sizing: border-box; background-color: #ffffff; transition: border-color 0.2s ease; }
+        .uig-az-input:focus, .uig-az-select:focus { outline: none; border-color: #0284c7; }
+        .uig-az-select { appearance: none; -webkit-appearance: none; -moz-appearance: none; background-image: url('data:image/svg+xml;utf8,<svg fill="%230284c7" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); background-repeat: no-repeat; background-position: right 14px center; padding-right: 45px; cursor: pointer; }
+        .uig-az-btn { background: #0284c7; color: #ffffff; border: none; padding: 16px 24px; width: 100%; border-radius: 6px; font-weight: 700; font-size: 1.1rem; cursor: pointer; margin-top: 10px; transition: background-color 0.2s ease; }
+        .uig-az-btn:hover { background: #0369a1; }
+        .uig-az-result-box { display: none; margin-top: 25px; padding: 20px; background: #f0f9ff; border-left: 5px solid #0284c7; border-radius: 0 6px 6px 0; }
+        .uig-az-result-box h3 { color: #075985; margin-top: 0; margin-bottom: 15px; }
+        .uig-az-metric { font-size: 1.1rem; margin-bottom: 10px; color: #334155; }
+        .uig-az-metric span { font-weight: 700; color: #0f172a; }
+        .uig-az-wrapper h1 { font-size: 2.2rem; color: #0f172a; margin-bottom: 10px; }
+        .uig-az-wrapper h2 { font-size: 1.8rem; color: #1e293b; margin-top: 45px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        .uig-az-wrapper h3 { font-size: 1.4rem; color: #334155; margin-top: 30px; }
+        .uig-az-wrapper p { margin-bottom: 20px; text-align: justify; }
+        .uig-az-highlight { background: #e0f2fe; padding: 2px 6px; border-radius: 4px; font-weight: 600; color: #0284c7; }
+    </style>
+</head>
+<body>
+
+<div class="uig-az-wrapper">
+    <h1>Microsoft Fabric Pricing & Cloud Cost Estimator</h1>
+    
+    <div class="uig-az-card">
+        <div class="uig-az-input-group">
+            <label class="uig-az-label" for="uig_az_sku">Fabric Capacity Tier (F-SKU)</label>
+            <select id="uig_az_sku" class="uig-az-select">
+                <option value="0.36">F2 (2 Capacity Units) - ~$262/mo</option>
+                <option value="0.72">F4 (4 Capacity Units) - ~$525/mo</option>
+                <option value="1.44">F8 (8 Capacity Units) - ~$1,051/mo</option>
+                <option value="11.52" selected>F64 (64 Capacity Units) - ~$8,409/mo</option>
+                <option value="46.08">F256 (256 Capacity Units) - ~$33,638/mo</option>
+            </select>
+        </div>
+        <div class="uig-az-input-group">
+            <label class="uig-az-label" for="uig_az_storage">Estimated OneLake Storage (GB)</label>
+            <input type="number" id="uig_az_storage" class="uig-az-input" placeholder="e.g., 5000" value="5000">
+        </div>
+        <div class="uig-az-input-group">
+            <label class="uig-az-label" for="uig_az_pause">Pause Capacity During Off-Hours?</label>
+            <select id="uig_az_pause" class="uig-az-select">
+                <option value="730">No - Run 24/7 (730 Hours/Mo)</option>
+                <option value="320" selected>Yes - Workdays Only (approx 320 Hours/Mo)</option>
+            </select>
+        </div>
+        
+        <button id="uig_az_calc_btn" class="uig-az-btn">Estimate Monthly Azure Fabric Cost</button>
+        
+        <div id="uig_az_results" class="uig-az-result-box">
+            <h3>Estimated Monthly Expenditure</h3>
+            <div class="uig-az-metric" id="uig_az_out_compute"></div>
+            <div class="uig-az-metric" id="uig_az_out_storage"></div>
+            <div class="uig-az-metric" id="uig_az_out_total"></div>
+        </div>
+    </div>
+
+    <div class="uig-az-content">
+        <h2>Enterprise Data Architecture and Cloud Cost Economics</h2>
+        <p>In the rapidly evolving landscape of enterprise data management, transitioning from disjointed, legacy data warehouses to unified SaaS analytics platforms requires an absolute mastery of cloud economics. As organizations migrate to platforms like Microsoft Fabric, the traditional capital expenditure (CapEx) models of purchasing physical servers are entirely replaced by operational expenditure (OpEx) frameworks. In an OpEx model, precise capacity planning and cost calculation are the only barriers between an efficient data operation and catastrophic budget overruns. For Chief Data Officers and Lead Data Analytics Architects, understanding the billing meters of compute capacity and data storage is just as critical as engineering the actual ETL pipelines themselves.</p>
+        
+        <p>Microsoft Fabric introduces a revolutionary, simplified pricing model centered around Capacity Units (CUs), operating under universally standardized F-SKUs. Rather than paying separately for Azure Data Factory integration runtimes, dedicated SQL pools in Azure Synapse, and Power BI Premium nodes, enterprise clients purchase a single, unified pool of compute power. According to the official <a href="https://azure.microsoft.com/en-us/pricing/" target="_blank" rel="noopener">Microsoft Azure Pricing Documentation</a>, this compute pool dynamically reallocates itself seamlessly across all workloads—from Spark notebooks executing complex Python transformations to real-time Power BI dashboard refreshes. However, while this flexibility eliminates architectural silos, it also creates significant financial risk if capacity is not rigorously monitored and optimized.</p>
+
+        <h3>Understanding Capacity Units and F-SKUs</h3>
+        <p>The calculation of your monthly cloud analytics bill fundamentally begins with selecting the correct F-SKU. An F-SKU represents a specific amount of computing power. For instance, an F2 capacity provides 2 Capacity Units, suitable only for lightweight development and testing. Conversely, enterprise production environments typically begin at the F64 tier, which provides 64 Capacity Units. The F64 tier is a critical financial threshold because it is the exact point at which features like Power BI Free user consumption and Copilot for Microsoft Fabric become fully unlocked. Running a complex query on an F64 capacity will execute much faster than on an F8, burning through the assigned CUs at a highly accelerated rate.</p>
+
+        <p>One of the most potent cost-saving mechanisms available to data architects within this ecosystem is the ability to programmatically pause the capacity. Unlike legacy Power BI Premium (P-SKUs), which required a rigid 24/7 financial commitment, Fabric capacities are billed strictly on a pay-as-you-go, per-second basis. If an organization only requires heavy data transformation and reporting during standard business hours, a lead engineer can utilize REST APIs to pause the F-SKU during nights and weekends. As noted by enterprise technology analysts at <a href="https://www.gartner.com/en/information-technology" target="_blank" rel="noopener">Gartner</a>, implementing automated pausing schedules can slash total monthly compute expenditures by over 50%, transforming a massive enterprise expense into a highly optimized, lean operational cost.</p>
+
+        <h3>OneLake Storage Billing Mechanics</h3>
+        <p>While compute power (the F-SKU) accounts for the vast majority of the monthly invoice, data storage constitutes the secondary billing pillar. Microsoft Fabric utilizes a centralized data lake concept known as OneLake—essentially the "OneDrive for data." All data, regardless of whether it is housed in a Lakehouse, a Data Warehouse, or a KQL database, is stored in a universal Delta Parquet format within OneLake. This completely eliminates the need for expensive data duplication across multiple proprietary storage engines. The pricing for OneLake storage is calculated per gigabyte (GB) per month and aligns closely with the standard pricing of Azure Data Lake Storage (ADLS) Gen2.</p>
+
+        <p>However, enterprise architects must carefully calculate data retention policies to prevent storage bloat. Features such as OneLake's "Time Travel," which allows engineers to query historical versions of Delta tables, consume additional physical storage capacity. A table that processes millions of rows daily can rapidly inflate storage costs if older transaction logs are not systematically vacuumed or tiered into colder, cheaper storage archives. Implementing strict data governance and automated cleanup scripts via Python or Spark is mandatory for maintaining a lean financial profile at the enterprise scale.</p>
+
+        <h3>Strategic Financial Modeling for Cloud Analytics</h3>
+        <p>Transitioning to unified cloud analytics is a massive financial commitment for any enterprise. Board members and CFOs demand highly accurate, predictive mathematical models before approving migration budgets. A static calculation gives a baseline, but modeling growth requires projecting data ingestion rates, user concurrency scaling, and expected machine learning workloads over a multi-year timeline. Research frameworks published by <a href="https://www.forrester.com/" target="_blank" rel="noopener">Forrester</a> strongly indicate that organizations that fail to implement continuous financial operations (FinOps) for their cloud infrastructure typically overspend their initial projections by more than 30% within the first year of deployment.</p>
+
+        <p>For organizations looking to deploy advanced programmatic calculators to model these exact multi-year financial scenarios, or to calculate the overarching return on investment (ROI) of digital infrastructure, sophisticated calculation engines are required. You can access an entire suite of highly specialized financial, business, and enterprise calculation tools directly through the <a href="https://ultimateinfoguide.com/" target="_blank">Ultimate Info Guide Financial Calculators</a>. Integrating mathematically rigorous financial modeling tools into your procurement phase completely eliminates the speculative risk associated with cloud migrations, ensuring that the transition to modern analytics stacks like Microsoft Fabric remains a highly profitable technological upgrade.</p>
+        
+        <p>In summary, calculating the cost of a modern data estate goes far beyond reading a basic pricing page. It demands a holistic understanding of how data moves, where it rests, and the exact computational power required to transform raw telemetry into actionable business intelligence. By mastering the variables of F-SKUs, OneLake storage rates, and operational scheduling, data architects transition from mere engineers into highly strategic financial assets for the enterprise.</p>
+    </div>
+</div>
+
+<script>
+/* STRICT JS ENCAPSULATION: UIG Azure Node */
+(function () {
+    "use strict";
+
+    function calculateFabricCosts() {
+        var skuInput = document.getElementById("uig_az_sku");
+        var storageInput = document.getElementById("uig_az_storage");
+        var pauseInput = document.getElementById("uig_az_pause");
+        var resultBox = document.getElementById("uig_az_results");
+        
+        var outCompute = document.getElementById("uig_az_out_compute");
+        var outStorage = document.getElementById("uig_az_out_storage");
+        var outTotal = document.getElementById("uig_az_out_total");
+
+        if (!skuInput || !storageInput || !pauseInput || !resultBox) return;
+
+        var hourlyComputeRate = parseFloat(skuInput.value);
+        var storageGB = parseFloat(storageInput.value);
+        var activeHours = parseFloat(pauseInput.value);
+
+        if (isNaN(hourlyComputeRate) || isNaN(storageGB) || isNaN(activeHours) || storageGB < 0) {
+            alert("Please input valid numerical values.");
+            return;
+        }
+
+        /* Logic: Calculate Compute Cost */
+        var computeCost = hourlyComputeRate * activeHours;
+        
+        /* Logic: Calculate OneLake Storage Cost (Approx $0.023 per GB/mo) */
+        var storageCost = storageGB * 0.023;
+        
+        /* Total Monthly Estimated Cost */
+        var totalCost = computeCost + storageCost;
+
+        outCompute.innerHTML = "Estimated Compute (F-SKU) Cost: <span>$" + computeCost.toFixed(2) + " / month</span>";
+        outStorage.innerHTML = "Estimated OneLake Storage Cost: <span>$" + storageCost.toFixed(2) + " / month</span>";
+        outTotal.innerHTML = "Total Estimated Monthly Cloud Bill: <span style='color: #16a34a;'>$" + totalCost.toFixed(2) + " / month</span>";
+
+        resultBox.style.display = "block";
+    }
+
+    function init() {
+        var calcBtn = document.getElementById("uig_az_calc_btn");
+        if (calcBtn) {
+            calcBtn.onclick = calculateFabricCosts;
+        }
+    }
+
+    /* LOAD HANDLING: Strict DOMContentLoaded execution */
+    document.addEventListener("DOMContentLoaded", init);
+})();
+</script>
+
+</body>
+</html>
